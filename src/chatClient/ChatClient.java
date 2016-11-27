@@ -4,7 +4,7 @@
  * Date: 10/01/04
  * Authors:
  */
-package chat;
+package chatClient;
 
 import java.io.*;
 import java.net.*;
@@ -41,30 +41,33 @@ public class ChatClient {
 		PrintStream socOut = null;
 		BufferedReader stdIn = null;
 		BufferedReader socIn = null;
-
+                ClientSideThread clientSideThread=null;
+                
 		int port = readPort();
 		try {
 			// creation socket ==> connexion
 			echoSocket = new Socket(host, port);
+                        clientSideThread=new ClientSideThread(echoSocket);
+                        clientSideThread.start();
 			socIn = new BufferedReader(new InputStreamReader(echoSocket.getInputStream()));
 			socOut = new PrintStream(echoSocket.getOutputStream());
 			stdIn = new BufferedReader(new InputStreamReader(System.in));
 		} catch (UnknownHostException e) {
-			System.err.println("Don't know about host:" + args[0]);
+			System.err.println("Don't know about host:" + host);
 			System.exit(1);
 		} catch (IOException e) {
-			System.err.println("Couldn't get I/O for " + "the connection to:" + args[0]);
+			System.err.println("Couldn't get I/O for " + "the connection to:" + host);
 			System.exit(1);
 		}
 
 		String line;
-		while (true) {
-			System.out.print("Type a message please: ");
+              	while (true) {
+			System.out.println("Type a message please: ");
 			line = stdIn.readLine();
 			if (line.equals("."))
 				break;
 			socOut.println(line);
-			System.out.println("received message: " + socIn.readLine());
+			//System.out.println("received message: " + socIn.readLine());
 		}
 		socOut.close();
 		socIn.close();

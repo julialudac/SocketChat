@@ -1,4 +1,4 @@
-package chat;
+package chatServer;
 
 import java.io.PrintStream;
 import java.net.ServerSocket;
@@ -6,11 +6,11 @@ import java.net.Socket;
 import java.util.Scanner;
 import java.util.ArrayList;
 
-import chat.ClientThread;
+import chatServer.ServersSideThread;
 
 public class ChatServer {
 	static Scanner scanner=new Scanner(System.in);
-	static ArrayList<ClientThread> threadArray=new ArrayList(10);
+	static ArrayList<ServersSideThread> threadArray=new ArrayList(10);
 	
 	public static int readPort(){
 		System.out.println("Enter the port");
@@ -38,7 +38,7 @@ public class ChatServer {
 			while (true) {
 				Socket clientSocket = listenSocket.accept();
 				System.out.println("Connexion from:" + clientSocket.getInetAddress());
-				ClientThread ct = new ClientThread(clientSocket);
+				ServersSideThread ct = new ServersSideThread(clientSocket);
 				threadArray.add(ct);
 				ct.start();
 			}
