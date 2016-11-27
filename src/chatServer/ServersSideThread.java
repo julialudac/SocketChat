@@ -17,8 +17,10 @@ public class ServersSideThread extends Thread {
         BufferedReader socIn = null;
         PrintStream socOut=null;
 	ArrayList<String> message=new ArrayList();
-	public ServersSideThread(Socket s) {
+        int clientNumber;
+	public ServersSideThread(Socket s, int nr) {
 		this.clientSocket = s;
+                this.clientNumber=nr;
 	}
 
 	/**
@@ -28,10 +30,10 @@ public class ServersSideThread extends Thread {
 	 *            the client socket
 	 **/
 	
-	public void messageAllClients(String mes) {
+	public void messageAllClients(String mes, int source) {
 		for(int i=0;i<ChatServer.threadArray.size();i++){
 			try{
-				ChatServer.threadArray.get(i).printMessage(mes,i);
+				ChatServer.threadArray.get(i).printMessage(mes,source);
 			}
 			catch (Exception e) {
 	        	System.err.println("Error in ChatServer:" + e); 
@@ -39,11 +41,11 @@ public class ServersSideThread extends Thread {
 		}
 	}
 	
-	public void printMessage(String mes,int i){
+	public void printMessage(String mes,int source){
 		try {
 			socIn = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 			PrintStream socOut = new PrintStream(clientSocket.getOutputStream());
-			String mess="client "+(i+1)+" said: "+mes;
+			String mess="client "+(source+1)+" said: "+mes;
 			socOut.println(mess);
 			
 		} catch (Exception e) {
@@ -60,7 +62,7 @@ public class ServersSideThread extends Thread {
 				String line = socIn.readLine();
 				System.out.println("received a message: "+line);
 				message.add(line);
-				messageAllClients(message.get(message.size()-1));
+				messageAllClients(message.get(message.size()-1),clientNumber);
 				System.out.println("after message all clients ");
 				message.remove(message.size()-1);
 				System.out.println("after remove ");

@@ -38,7 +38,7 @@ public class ChatServer {
 			while (true) {
 				Socket clientSocket = listenSocket.accept();
 				System.out.println("Connexion from:" + clientSocket.getInetAddress());
-				ServersSideThread ct = new ServersSideThread(clientSocket);
+				ServersSideThread ct = new ServersSideThread(clientSocket,threadArray.size());
 				threadArray.add(ct);
 				ct.start();
 			}
